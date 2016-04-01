@@ -16,6 +16,7 @@ namespace MainProject
         private TextBox _tBox;
         private Point _mouseSelectPosition;
         private float _moveOffset;
+        private bool _canMove;
         
         public UmlShape(Canvas cvs, ShapeType type) : base(cvs, type)
         {
@@ -30,9 +31,21 @@ namespace MainProject
 
             //attach events
             this.MouseMove += OverElement_MouseMove;
+            this.MouseLeftButtonDown += GetOriginSelectPos_MouseDown;
+            this.MouseLeftButtonUp += Release_MouseUp;
         }
 
         //EVENTS
+
+        private void Release_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _canMove = false;
+        }
+
+        protected override void LeaveElement(object sender, MouseEventArgs e)
+        {
+            base.LeaveElement(sender, e);
+        }
 
         private void GetOriginSelectPos_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -43,10 +56,14 @@ namespace MainProject
         {
             if(e.MouseDevice.LeftButton == MouseButtonState.Pressed)
             {
-                if (state == UmlElementState.Selected &&
-                    (Math.Abs(e.GetPosition(umlCanvas).X) + _moveOffset > _mouseSelectPosition.X ||
-                    Math.Abs(e.GetPosition(umlCanvas).Y) + _moveOffset > _mouseSelectPosition.Y))
+                if (Math.Abs(_mouseSelectPosition.X - e.GetPosition(umlCanvas).X) > _moveOffset)
+                    _canMove = true;
+
+                if (state == UmlElementState.Selected)
                 {
+                    if (!_canMove)
+                        return;
+
                     MoveElement(e.GetPosition(umlCanvas));
                 }
                 else

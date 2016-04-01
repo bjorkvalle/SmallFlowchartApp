@@ -63,7 +63,7 @@ namespace MainProject
             HoverEffect(true);
         }
 
-        protected void LeaveElement(object sender, MouseEventArgs e)
+        protected virtual void LeaveElement(object sender, MouseEventArgs e)
         {
             HoverEffect(false);
         }
