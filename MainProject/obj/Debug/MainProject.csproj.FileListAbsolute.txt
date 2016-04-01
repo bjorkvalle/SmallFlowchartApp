@@ -1,0 +1,14 @@
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\bin\Debug\MainProject.exe.config
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\MainProject.csprojResolveAssemblyReference.cache
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\MainWindow.g.cs
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\App.g.cs
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\MainProject_MarkupCompile.cache
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\MainProject_MarkupCompile.lref
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\bin\Debug\MainProject.exe
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\bin\Debug\MainProject.pdb
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\MainWindow.baml
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\MainProject.g.resources
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\MainProject.Properties.Resources.resources
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\MainProject.csproj.GenerateResource.Cache
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\MainProject.exe
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Debug\MainProject.pdb
