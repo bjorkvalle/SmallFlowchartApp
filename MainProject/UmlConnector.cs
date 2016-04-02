@@ -19,10 +19,6 @@ namespace MainProject
 
         public UmlConnector(Canvas cvs) : base(cvs, ShapeType.Line)
         {
-            //set up connection
-            //OriginConnection = originConnection;
-            //SetPosition();
-
             //set up container
             shape = new Line();
             shape.StrokeThickness = strokeThicknessEnter;

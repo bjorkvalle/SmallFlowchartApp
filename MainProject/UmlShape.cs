@@ -111,19 +111,18 @@ namespace MainProject
                     //    return;
 
                     MoveElement(e.GetPosition(umlCanvas));
+                    MoveConnectors();
                 }
                 else if (state == UmlElementState.LineDrag)
                 {
                     //drag line area
-
-                    _tBox.Text = "dragginh";
                     
-
                     //Package Data
                     DataObject data = new DataObject();
                     data.SetData("connector", new UmlConnector(umlCanvas)); 
                     data.SetData("origin", this);
 
+                    //initiate drag event
                     DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
                 }
             }
@@ -142,20 +141,8 @@ namespace MainProject
                 originObj.AddConnector(connector);
                 targetObj.AddConnector(connector);
 
-                //get connector points
-                //Point originPos = new Point(Canvas.GetLeft(originObj) + (originObj.Width / 2),
-                //                            Canvas.GetTop(originObj) + (originObj.Height / 2));
-                //Point targetPos = new Point(Canvas.GetLeft(targetObj) + (targetObj.Width / 2),
-                //                            Canvas.GetTop(targetObj) + (targetObj.Height / 2));
-
                 //Place connector
                 connector.SetPosition(originObj, targetObj);
-
-                //Line line = (Line)e.Data.GetData("Line");
-                //line.X1 = originPos.X;
-                //line.Y1 = originPos.Y;
-                //line.X2 = targetPos.X;
-                //line.Y2 = targetPos.Y;
             }
         }
 
@@ -181,6 +168,14 @@ namespace MainProject
         {
             Canvas.SetLeft(this, mousePos.X - (this.Width / 2));
             Canvas.SetTop(this, mousePos.Y - (this.Height / 2));
+        }
+
+        private void MoveConnectors()
+        {
+            foreach(UmlConnector item in _attachedConnectors)
+            {
+                item.SetPosition();
+            }
         }
 
         public override void SetState(UmlElementState state, int currentZIndex)
