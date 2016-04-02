@@ -23,8 +23,8 @@ namespace MainProject
             idleStroke,
             selectStroke;
         protected int
-            strokeThicknessEnter = 5,
-            strokeThicknessLeave = 2;
+            strokeThicknessEnter = 8,
+            strokeThicknessLeave = 4;
 
         public UmlElement(Canvas cvs, ShapeType type)
         {
@@ -66,6 +66,9 @@ namespace MainProject
         protected virtual void LeaveElement(object sender, MouseEventArgs e)
         {
             HoverEffect(false);
+
+            if (state == UmlElementState.LineDrag)
+                state = UmlElementState.NotSelected;
         }
 
         //STATES

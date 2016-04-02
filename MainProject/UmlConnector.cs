@@ -21,7 +21,7 @@ namespace MainProject
         {
             //set up container
             shape = new Line();
-            shape.StrokeThickness = strokeThicknessEnter;
+            shape.StrokeThickness = strokeThicknessLeave;
             SetColor(shapeBrush);
             SetDepth(0);
             this.Children.Add(shape);

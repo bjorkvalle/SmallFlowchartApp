@@ -16,13 +16,16 @@ namespace MainProject
         private List<UmlConnector> _attachedConnectors;
 
         private TextBox _tBox;
+        bool _addedNewConnector;
         //private float _holdTime;
         //private float _timeBeforeMove;
         
         public UmlShape(Canvas cvs, ShapeType type) : base(cvs, type)
         {
             AllowDrop = true;
+
             _attachedConnectors = new List<UmlConnector>();
+            _addedNewConnector = false;
             //_holdTime = 0;
             //_timeBeforeMove = 1.5f;
 
@@ -84,12 +87,13 @@ namespace MainProject
                 VerticalAlignment = VerticalAlignment.Center
             };
         }
-        
+
         //EVENTS
 
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            //_holdTime = 0;
+            if (state == UmlElementState.LineDrag)
+                state = UmlElementState.NotSelected;
         }
 
         protected override void LeaveElement(object sender, MouseEventArgs e)
@@ -115,25 +119,27 @@ namespace MainProject
                 }
                 else if (state == UmlElementState.LineDrag)
                 {
-                    //drag line area
-                    
-                    //Package Data
-                    DataObject data = new DataObject();
-                    data.SetData("connector", new UmlConnector(umlCanvas)); 
-                    data.SetData("origin", this);
-
-                    //initiate drag event
-                    DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
+                    InitiateDragLineEvent();
                 }
             }
         }
 
+        private void InitiateDragLineEvent()
+        {
+            //Package Data
+            DataObject data = new DataObject();
+            data.SetData("origin", this);
+
+            //initiate drag event
+            DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
+        }
+
         private void Connector_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent("connector") && e.Data.GetDataPresent("origin"))
+            if (e.Data.GetDataPresent("origin"))
             {
                 //get affected objects
-                UmlConnector connector = (UmlConnector)e.Data.GetData("connector");
+                UmlConnector connector = new UmlConnector(umlCanvas);
                 UmlShape originObj = (UmlShape)e.Data.GetData("origin");
                 UmlShape targetObj = (sender as UmlShape);
 
@@ -143,7 +149,20 @@ namespace MainProject
 
                 //Place connector
                 connector.SetPosition(originObj, targetObj);
+
+                _addedNewConnector = true;
             }
+        }
+
+        public UmlConnector AddedNewConnector()
+        {
+            if (_addedNewConnector)
+            {
+                _addedNewConnector = false;
+                return _attachedConnectors[_attachedConnectors.Count-1] as UmlConnector;
+            }
+            else
+                return null;
         }
 
         //ACTIONS

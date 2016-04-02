@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace MainProject
@@ -20,21 +12,31 @@ namespace MainProject
     /// </summary>
     public partial class MainWindow : Window
     {
-        UmlElement _activeElement;
-        ShapeType _activeType;
-        Brush _activeBrush;
-        int _currentZIndex;
+        private ShapeType _activeType;
+        private UmlElement _activeElement;
+        private Brush _activeBrush;
+        private int _currentZIndex;
+        private Button
+            _activeShapeButton,
+            _activeColorButton;
 
         public MainWindow()
         {
             InitializeComponent();
-            //InitializeValues();
-
-            _currentZIndex = 0;
-            cvsUml.MouseLeftButtonDown += UmlCanvas_MouseDown;
-            CreateUmlElement(new Point(100, 100));
+            InitializeValues();
+            InitializeEventHandlers();
         }
-        
+
+        private void InitializeValues()
+        {
+            _currentZIndex = 0;
+        }
+
+        private void InitializeEventHandlers()
+        {
+            cvsUml.MouseLeftButtonDown += UmlCanvas_MouseDown;
+        }
+
         //this only registers CLICKS (not hold)
         private void UmlCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -43,63 +45,42 @@ namespace MainProject
             if (elm != null)
             {
                 ClickElement(elm);
-
-                //to prevent the event from firing again if hovering over new element
-                e.Handled = true;
+                e.Handled = true; //to prevent the event from firing again if hovering over new element
             }
             else if((sender as Canvas) != null)
-            {
                 ClickCanvas(e.GetPosition(cvsUml));
-            }
-
-            //-->DEBUG - REMOVE LATER
-            if (_activeElement != null)
-                _activeElement.SetColor(Brushes.BlanchedAlmond);
-            else
-            {
-                foreach (var item in cvsUml.Children)
-                {
-                    UmlElement i = item as UmlElement;
-
-                    if (i != null)
-                        i.SetColor(Brushes.Crimson);
-                }
-            }
-            //<--
         }
 
         private void ClickCanvas(Point point)
         {
-            //deselect previous active
             if (_activeElement != null)
-            {
-                _activeElement.SetState(UmlElementState.NotSelected, _currentZIndex);
-                _activeElement = null;
-            }
-            else //create new shape - not lines
-                CreateUmlElement(point);
+                DeselectUmlElement();
+            else 
+                CreateUmlElement(point); //create new shape - not lines
         }
 
         private void ClickElement(UmlElement elm)
         {
-            //deselect previous active
-            if (_activeElement != null)
-                _activeElement.SetState(UmlElementState.NotSelected, _currentZIndex);
-            
+            DeselectUmlElement();
 
             //set new element state
             if (_activeType != ShapeType.Line)
             {
-                //set new active
                 _activeElement = elm;
-
-                //move possible
                 _activeElement.SetState(UmlElementState.Selected, ++_currentZIndex);
             }
             else 
             {
-                //line drag possible
-                elm.SetState(UmlElementState.LineDrag, ++_currentZIndex);
+                if (elm.GetType() == typeof(UmlShape))
+                {
+                    //line drag possible
+                    elm.SetState(UmlElementState.LineDrag, ++_currentZIndex);
+                }
+                else if (elm.GetType() == typeof(UmlConnector))
+                {
+                    _activeElement = elm;
+                    elm.SetState(UmlElementState.Selected, _currentZIndex);
+                }
             }
         }
 
@@ -116,215 +97,44 @@ namespace MainProject
             if (_activeType != ShapeType.None && _activeType != ShapeType.Line)
             {
                 _activeElement = new UmlShape(cvsUml, _activeType);
-                _activeElement.MouseLeftButtonDown += UmlCanvas_MouseDown;
-                _activeElement.SetState(UmlElementState.Selected, ++_currentZIndex);
-
-                Canvas.SetLeft(_activeElement, point.X - (_activeElement.Width / 2));
-                Canvas.SetTop(_activeElement, point.Y - (_activeElement.Height / 2));
+                SetElementStartUpState();
+                SetElementPosition(point);
+                SetElementEventHandlers();
             }
         }
 
-
-
-
-        ////registers constantly when fired
-        //private void MovingOnCanvas_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    _activeElement = (sender as UmlElement);
-
-        //    if (_activeElement != null)
-        //    {
-        //        _activeElement.SetPosition(cvsUml, e);
-        //    }
-
-        //    //this registers HOLDING
-        //    if (e.MouseDevice.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        _activeElement = (sender as UmlElement);
-        //        //_mouseLeftReleased = false;
-
-        //        //must have been hovering umlElement to select it,
-        //        //not "slide" in from canvas
-        //        if (_activeElement != null)
-        //        {
-        //            if (_mouseLeftReleased)
-        //            {
-        //                //marks object as isSelected
-        //                //_activeElement.SetSelected(true);
-        //                tBlock_Debug1.Text = "selected";
-        //            }
-
-        //            //to prevent the event to fire again if hovering over new element
-        //            e.Handled = true;
-        //        }
-        //        else if((sender as Canvas) != null) //deselects active UmlElement
-        //        {
-        //            MessageBox.Show("asdasd");
-        //            //to prevent selection of umlElement by "sliding" into it
-        //            _mouseLeftReleased = false;
-
-        //            //Mark active UmlElement as !isSelected
-        //            if (_activeElement != null)
-        //            {
-        //                //_activeElement.SetSelected(false);
-        //                tBlock_Debug1.Text = "not selected";
-        //                _activeElement = null;
-        //            }
-        //        }
-        //    }
-
-        //    if (e.MouseDevice.LeftButton == MouseButtonState.Released)
-        //    {
-        //        _mouseLeftReleased = true;
-
-        //        //if (sender as UmlElement != null)
-        //        //{
-
-        //        //}
-        //        //else if ((sender as Canvas) != null)
-        //        //{
-
-        //        //}
-        //    }
-        //}
-
-        //private void MovingOnCanvas_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    _hoverElement = (sender as UmlElement);
-
-        //    if (_hoverElement != null)
-        //    {
-        //        _hoverElement.Hover(true, _selectedType);
-        //        //to prevent the event to continue firing if hovering over shape
-        //        e.Handled = true;
-        //        return;
-        //    }
-        //    else if ((sender as Canvas) != null)
-        //    {
-        //        if (_hoverElement != null)
-        //        {
-        //            _hoverElement.Hover(false, _selectedType);
-        //            _hoverElement = null;
-        //        }
-        //    }
-        //}
-
-
-
-
-
-        //private void UmlCanvas_MouseUp(object sender, MouseButtonEventArgs e)
-        //{
-        //    //if hovering over an uml when clicking, set activeElement to this and cancel the rest
-        //    if((sender as UmlElement) != null)
-        //    {
-        //        if(_activeElement != null)
-        //            _activeElement.ReleaseElement();
-
-        //        _activeElement = (sender as UmlElement);
-        //        _activeElement.SelectElement();
-        //        e.Handled = true;
-        //    }
-
-        //    //else deselect the active element, if one is active
-        //    if (((sender as Canvas) != null) && _activeElement != null)
-        //    {
-        //        _activeElement.ReleaseElement();
-        //        _activeElement = null;
-        //    }
-        //}
-
-        //private void UmlElement_MouseEnter(object sender, MouseEventArgs e)
-        //{
-        //    UmlElement elm = (sender as UmlElement);
-
-        //    if ((sender as UmlElement) != null)
-        //        _hoverElement = elm;
-        //}
-
-        //private void UmlElement_MouseLeave(object sender, MouseEventArgs e)
-        //{
-        //    UmlElement elm = (sender as UmlElement);
-
-        //    if ((sender as UmlElement) != null)
-        //        _hoverElement = null;
-        //}
-
-        private void InitializeValues()
+        private void SetElementStartUpState()
         {
-            //_connectorGuide = null;
-            _activeType = ShapeType.Line;
-            //_activeShape = null;
-            _activeBrush = new BrushConverter().ConvertFromString("Blue") as Brush;
-
-            //Elp1.MouseMove += Shape_MouseMove;
-            //Elp2.MouseMove += Shape_MouseMove;
-            Elp1.Drop += Shape_Drop;
-            Elp2.Drop += Shape_Drop;
+            _activeElement.SetState(UmlElementState.Selected, ++_currentZIndex);
+            SetElementColor(_activeBrush);
         }
 
-        private void Shape_Drop(object sender, DragEventArgs e)
+        private void SetElementPosition(Point point)
         {
+            Canvas.SetLeft(_activeElement, point.X - (_activeElement.Width / 2));
+            Canvas.SetTop(_activeElement, point.Y - (_activeElement.Height / 2));
+        }
 
-            if (e.Data.GetDataPresent("Line") && e.Data.GetDataPresent("OriginObject"))
+        private void SetElementEventHandlers()
+        {
+            _activeElement.MouseLeftButtonDown += UmlCanvas_MouseDown;
+            _activeElement.Drop += UmlElement_MouseUp;
+        }
+
+        private void UmlElement_MouseUp(object sender, DragEventArgs e)
+        {
+            UmlShape elm = sender as UmlShape;
+
+            if(elm != null)
             {
-                //get connector points
-                Shape originObj = (Shape)e.Data.GetData("OriginObject");
-                Shape targetObj = (sender as Shape);
-                Point originPos = new Point(Canvas.GetLeft(originObj) + (originObj.Width / 2),
-                                            Canvas.GetTop(originObj) + (originObj.Height / 2));
-                Point targetPos = new Point(Canvas.GetLeft(targetObj) + (targetObj.Width / 2),
-                                            Canvas.GetTop(targetObj) + (targetObj.Height / 2));
+                UmlConnector con = elm.AddedNewConnector();
 
-                //Place connector
-                Line line = (Line)e.Data.GetData("Line");
-                line.X1 = originPos.X;
-                line.Y1 = originPos.Y;
-                line.X2 = targetPos.X;
-                line.Y2 = targetPos.Y;
+                if (con != null)
+                    con.MouseLeftButtonDown += UmlCanvas_MouseDown;
             }
         }
 
-        //**SHAPE EVENTS**//
-
-        //private void Shape_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    Shape shape = (sender as Shape);
-        //    //Point shapePosition = new Point(Canvas.GetLeft(shape), Canvas.GetTop(shape));
-
-        //    if (e.MouseDevice.LeftButton == MouseButtonState.Pressed && !draggingConnector)
-        //    {
-        //        //Create Line and Line Data
-        //        if (_activeType == ShapeType.Line)
-        //        {
-        //            draggingConnector = true;
-
-        //            //Set up line
-        //            _activeShape = new Line()
-        //            {
-        //                StrokeThickness = 5,
-        //                Stroke = _activeBrush
-        //            };
-        //            cvsUml.Children.Add(_activeShape);
-                    
-        //            //Package Data
-        //            DataObject data = new DataObject();
-        //            data.SetData("OriginObject", shape);
-        //            data.SetData("Line", _activeShape);
-
-        //            DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
-        //        }
-        //        else //move shape
-        //        {
-        //            Canvas.SetLeft(shape, e.GetPosition(cvsUml).X - (shape.Width / 2));
-        //            Canvas.SetTop(shape, e.GetPosition(cvsUml).Y - (shape.Height / 2));
-        //        }
-        //    }
-        //    else if (e.MouseDevice.LeftButton == MouseButtonState.Released)
-        //        draggingConnector = false;
-        //}
-
-        //**MENU EVENTS**//
+        //**MENU**//
 
         private void btnSavePng_Click(object sender, RoutedEventArgs e)
         {
@@ -343,8 +153,78 @@ namespace MainProject
         
         private void btnShapeSelect_Click(object sender, RoutedEventArgs e)
         {
-            switch ((sender as Button).Name)
+            Button btn = (sender as Button);
+
+            SelectButton(ref _activeShapeButton, btn);
+            SelectShapeType(btn.Name);
+            DeselectUmlElement();
+        }
+
+        private void SelectButton(ref Button previous, Button next)
+        {
+            if (previous != null)
+                previous.Background = (Brush)new BrushConverter().ConvertFromString("#FFDDDDDD");
+
+            if (next != null)
+                next.Background = (Brush)new BrushConverter().ConvertFromString("#FFBFBFBF");
+
+            previous = next;
+        }
+
+        private void DeselectButtons()
+        {
+            SelectButton(ref _activeColorButton, null);
+            SelectButton(ref _activeShapeButton, null);
+        }
+
+        private void btnColor_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = (sender as Button);
+
+            SelectButton(ref _activeColorButton, btn);
+            SetElementColor(_activeBrush = btn.Foreground);
+        }
+
+        private void SetElementColor(Brush brush)
+        {
+            if (_activeElement != null && brush != null && _activeElement.GetType() != typeof(UmlConnector))
+                _activeElement.SetColor(brush);
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
             {
+                DeselectUmlElement();
+                DeselectShapeType();
+                SelectButton(ref _activeShapeButton, null);
+            }
+            else if(e.Key == Key.Delete)
+            {
+                cvsUml.Children.Remove(_activeElement);
+                _activeElement = null;
+            }
+        }
+
+        private void DeselectShapeType()
+        {
+            _activeType = ShapeType.None;
+        }
+
+        private void SelectShapeType(string type)
+        {
+            switch (type)
+            {
+                case ("btnRectangle"):
+                    {
+                        _activeType = ShapeType.Rectangle;
+                        break;
+                    }
+                case ("btnDiamond"):
+                    {
+                        _activeType = ShapeType.Diamond;
+                        break;
+                    }
                 case ("btnEllipse"):
                     {
                         _activeType = ShapeType.Ellipse;
@@ -353,7 +233,6 @@ namespace MainProject
                 case ("btnLine"):
                     {
                         _activeType = ShapeType.Line;
-                        DeselectUmlElement();
                         break;
                     }
                 default:
@@ -361,12 +240,6 @@ namespace MainProject
             }
         }
 
-        private void btnColor_Click(object sender, RoutedEventArgs e)
-        {
-            _activeBrush = (sender as Button).Foreground;
-
-            if (_activeElement != null && _activeBrush != null)
-                _activeElement.SetColor(_activeBrush);
-        }
+        
     }
 }

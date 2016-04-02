@@ -5,7 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MainProject"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="925" Background="#FFDADADA" MinWidth="625" MinHeight="350">
+        Title="MainWindow" 
+        Height="650" 
+        Width="925" 
+        Background="#FFDADADA" 
+        MinWidth="625" 
+        MinHeight="350"
+        KeyDown="Window_KeyDown">
     <DockPanel >
         <StackPanel DockPanel.Dock="Right" 
                     Margin="10"
