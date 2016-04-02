@@ -29,6 +29,9 @@ namespace MainProject
 
         private void InitializeValues()
         {
+            _activeType = ShapeType.None;
+            _activeElement = null;
+            _activeBrush = Brushes.AliceBlue;
             _currentZIndex = 0;
         }
 

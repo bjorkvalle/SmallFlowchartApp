@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Ink;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -78,10 +71,6 @@ namespace MainProject
             this.state = state;
             SetDepth(currentZIndex);
         }
-
-        //protected virtual void SelectElement() { }
-
-        //protected virtual void ReleaseElement() { }
 
         //EFFECTS
 
