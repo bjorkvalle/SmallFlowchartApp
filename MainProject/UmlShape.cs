@@ -13,15 +13,18 @@ namespace MainProject
 {
     class UmlShape : UmlElement
     {
+        private List<UmlConnector> _attachedConnectors;
+
         private TextBox _tBox;
-        private Point _mouseSelectPosition;
-        private float _moveOffset;
-        private bool _canMove;
+        //private float _holdTime;
+        //private float _timeBeforeMove;
         
         public UmlShape(Canvas cvs, ShapeType type) : base(cvs, type)
         {
-            //pixels before start moving shape
-            _moveOffset = 50;
+            AllowDrop = true;
+            _attachedConnectors = new List<UmlConnector>();
+            //_holdTime = 0;
+            //_timeBeforeMove = 1.5f;
 
             //set up container
             SetSize(100, 100);
@@ -30,55 +33,9 @@ namespace MainProject
             SetStroke(idleStroke);
 
             //attach events
-            this.MouseMove += OverElement_MouseMove;
-            this.MouseLeftButtonDown += GetOriginSelectPos_MouseDown;
-            this.MouseLeftButtonUp += Release_MouseUp;
-        }
-
-        //EVENTS
-
-        private void Release_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            _canMove = false;
-        }
-
-        protected override void LeaveElement(object sender, MouseEventArgs e)
-        {
-            base.LeaveElement(sender, e);
-        }
-
-        private void GetOriginSelectPos_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            _mouseSelectPosition = e.GetPosition(umlCanvas);
-        }
-
-        private void OverElement_MouseMove(object sender, MouseEventArgs e)
-        {
-            if(e.MouseDevice.LeftButton == MouseButtonState.Pressed)
-            {
-                if (Math.Abs(_mouseSelectPosition.X - e.GetPosition(umlCanvas).X) > _moveOffset)
-                    _canMove = true;
-
-                if (state == UmlElementState.Selected)
-                {
-                    if (!_canMove)
-                        return;
-
-                    MoveElement(e.GetPosition(umlCanvas));
-                }
-                else
-                {
-                    //drag line area
-                }
-            }
-        }
-
-        //ACTIONS
-
-        private void MoveElement(Point mousePos)
-        {
-            Canvas.SetLeft(this, mousePos.X - (this.Width / 2));
-            Canvas.SetTop(this, mousePos.Y - (this.Height / 2));
+            this.MouseMove += OnMouseMove;
+            this.MouseLeftButtonUp += OnMouseUp;
+            this.Drop += Connector_Drop;
         }
 
         //SETUP
@@ -121,21 +78,117 @@ namespace MainProject
             return new TextBox()
             {
                 Text = "TestText",
-                MinWidth = this.Width * 0.5f,
+                MinWidth = this.Width * 0.2f,
+                MaxWidth = this.Width*0.95f,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
         }
         
-        //STATES
+        //EVENTS
+
+        private void OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            //_holdTime = 0;
+        }
+
+        protected override void LeaveElement(object sender, MouseEventArgs e)
+        {
+            base.LeaveElement(sender, e); //hover effect
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if(e.MouseDevice.LeftButton == MouseButtonState.Pressed)
+            {
+                ////if time
+                //SetMovePermission();
+
+                if (state == UmlElementState.Selected)
+                {
+                    ////if time
+                    //if (_holdTime < _timeBeforeMove)
+                    //    return;
+
+                    MoveElement(e.GetPosition(umlCanvas));
+                }
+                else if (state == UmlElementState.LineDrag)
+                {
+                    //drag line area
+
+                    _tBox.Text = "dragginh";
+                    
+
+                    //Package Data
+                    DataObject data = new DataObject();
+                    data.SetData("connector", new UmlConnector(umlCanvas)); 
+                    data.SetData("origin", this);
+
+                    DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
+                }
+            }
+        }
+
+        private void Connector_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent("connector") && e.Data.GetDataPresent("origin"))
+            {
+                //get affected objects
+                UmlConnector connector = (UmlConnector)e.Data.GetData("connector");
+                UmlShape originObj = (UmlShape)e.Data.GetData("origin");
+                UmlShape targetObj = (sender as UmlShape);
+
+                //add connector references to affected shapes
+                originObj.AddConnector(connector);
+                targetObj.AddConnector(connector);
+
+                //get connector points
+                //Point originPos = new Point(Canvas.GetLeft(originObj) + (originObj.Width / 2),
+                //                            Canvas.GetTop(originObj) + (originObj.Height / 2));
+                //Point targetPos = new Point(Canvas.GetLeft(targetObj) + (targetObj.Width / 2),
+                //                            Canvas.GetTop(targetObj) + (targetObj.Height / 2));
+
+                //Place connector
+                connector.SetPosition(originObj, targetObj);
+
+                //Line line = (Line)e.Data.GetData("Line");
+                //line.X1 = originPos.X;
+                //line.Y1 = originPos.Y;
+                //line.X2 = targetPos.X;
+                //line.Y2 = targetPos.Y;
+            }
+        }
+
+        //ACTIONS
+
+        public void AddConnector(UmlConnector connector)
+        {
+            if (connector != null)
+                _attachedConnectors.Add(connector);
+        }
+
+        ////if time, have a look at a timer
+        private void SetMovePermission()
+        {
+            ////if time, have a look at a timer
+            //while (_holdTime < _timeBeforeMove)
+            //{
+            //    yield return new WaitForSeconds(1);
+            //}
+        }
+
+        private void MoveElement(Point mousePos)
+        {
+            Canvas.SetLeft(this, mousePos.X - (this.Width / 2));
+            Canvas.SetTop(this, mousePos.Y - (this.Height / 2));
+        }
 
         public override void SetState(UmlElementState state, int currentZIndex)
         {
             base.SetState(state, currentZIndex);
-            SetStroke(state == UmlElementState.NotSelected ? idleStroke : selectStroke);
-        }
 
-        //EFFECTS
+            SetStroke(state == UmlElementState.Selected ? selectStroke : idleStroke);
+        }
 
         public override void SetColor(Brush newColor)
         {

@@ -86,20 +86,29 @@ namespace MainProject
             if (_activeElement != null)
                 _activeElement.SetState(UmlElementState.NotSelected, _currentZIndex);
             
-            //set new active
-            _activeElement = elm;
 
             //set new element state
             if (_activeType != ShapeType.Line)
             {
+                //set new active
+                _activeElement = elm;
+
                 //move possible
                 _activeElement.SetState(UmlElementState.Selected, ++_currentZIndex);
             }
             else 
             {
                 //line drag possible
-                _activeElement.SetState(UmlElementState.LineDrag, ++_currentZIndex);
+                elm.SetState(UmlElementState.LineDrag, ++_currentZIndex);
             }
+        }
+
+        private void DeselectUmlElement()
+        {
+            if (_activeElement != null)
+                _activeElement.SetState(UmlElementState.NotSelected, _currentZIndex);
+
+            _activeElement = null;
         }
 
         private void CreateUmlElement(Point point)
@@ -344,6 +353,7 @@ namespace MainProject
                 case ("btnLine"):
                     {
                         _activeType = ShapeType.Line;
+                        DeselectUmlElement();
                         break;
                     }
                 default:

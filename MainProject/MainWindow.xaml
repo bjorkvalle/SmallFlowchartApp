@@ -83,7 +83,6 @@
                      Canvas.Left="300" 
                      Canvas.Top="100" 
                      AllowDrop="True"/>
-            <Line X1="0" Y1="0" X2="50" Y2="50" Stroke="Red" StrokeThickness="2"></Line>
         </Canvas>
     </DockPanel>
 </Window>
