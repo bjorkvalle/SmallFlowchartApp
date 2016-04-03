@@ -1,0 +1,13 @@
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\bin\Release\MainProject.exe.config
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\bin\Release\MainProject.exe
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\bin\Release\MainProject.pdb
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Release\MainWindow.g.cs
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Release\App.g.cs
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Release\MainProject_MarkupCompile.cache
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Release\MainProject_MarkupCompile.lref
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Release\MainWindow.baml
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Release\MainProject.g.resources
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Release\MainProject.Properties.Resources.resources
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Release\MainProject.csproj.GenerateResource.Cache
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Release\MainProject.exe
+C:\Users\scorl\Dropbox\SystemutvecklingUtbildning\Windowsapplikationer\inlämningsuppgifter\1\UmlEditor\UmlProject\MainProject\obj\Release\MainProject.pdb
