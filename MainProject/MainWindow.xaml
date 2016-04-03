@@ -78,20 +78,6 @@
         </StackPanel>
         <Canvas Name="cvsUml"
                 Background="White">
-            <Ellipse x:Name="Elp1" 
-                     Width="100" 
-                     Height="100" 
-                     Fill="#33FF0000" 
-                     Canvas.Left="100" 
-                     Canvas.Top="100" 
-                     AllowDrop="True"/>
-            <Ellipse x:Name="Elp2" 
-                     Width="100" 
-                     Height="100" 
-                     Fill="#33008000" 
-                     Canvas.Left="300" 
-                     Canvas.Top="100" 
-                     AllowDrop="True"/>
         </Canvas>
     </DockPanel>
 </Window>

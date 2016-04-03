@@ -32,6 +32,8 @@ namespace MainProject
             _activeElement = null;
             _currentZIndex = 0;
 
+            cvsUml.ToolTip = "Click on canvas or the delete key to deselect active shape type";
+
             //set default color
             btnColorBlue.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
@@ -58,9 +60,14 @@ namespace MainProject
         private void ClickCanvas(Point point)
         {
             if (_activeElement != null)
+            {
                 DeselectUmlElement();
+            }
             else 
                 CreateUmlElement(point); //create new shape - not lines
+
+            DeselectShapeType();
+            SelectButton(ref _activeShapeButton, null);
         }
 
         private void ClickElement(UmlElement elm)
