@@ -1,9 +1,8 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
+using System.Windows.Media.Imaging;
 
 namespace MainProject
 {
@@ -25,24 +24,16 @@ namespace MainProject
             InitializeComponent();
             InitializeValues();
             InitializeEventHandlers();
-
-
-            //Polygon poly = new Polygon() { Fill = Brushes.Blue , Stroke=Brushes.Red};
-
-            //poly.Points.Add(new Point(100, 100));
-            //poly.Points.Add(new Point(200, 200));
-            //poly.Points.Add(new Point(100, 200));
-            //poly.Points.Add(new Point(50, 200));
-
-            //cvsUml.Children.Add(poly);
         }
 
         private void InitializeValues()
         {
             _activeType = ShapeType.None;
             _activeElement = null;
-            _activeBrush = Brushes.AliceBlue;
             _currentZIndex = 0;
+
+            //set default color
+            btnColorBlue.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
 
         private void InitializeEventHandlers()
@@ -151,8 +142,9 @@ namespace MainProject
 
         private void btnSavePng_Click(object sender, RoutedEventArgs e)
         {
+            CreateSaveBitmap(cvsUml, @"C:\temp\out.png");
         }
-        
+
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             _activeElement = null;
@@ -195,7 +187,7 @@ namespace MainProject
             Button btn = (sender as Button);
 
             SelectButton(ref _activeColorButton, btn);
-            SetElementColor(_activeBrush = btn.Foreground);
+            SetElementColor(_activeBrush = btn.BorderBrush);
         }
 
         private void SetElementColor(Brush brush)
@@ -214,6 +206,7 @@ namespace MainProject
             }
             else if(e.Key == Key.Delete)
             {
+                _activeElement.OnRemove();
                 cvsUml.Children.Remove(_activeElement);
                 _activeElement = null;
             }
@@ -253,6 +246,29 @@ namespace MainProject
             }
         }
 
-        
+        private void CreateSaveBitmap(Canvas cvs, string filename)
+        {
+            //If the folder does not exist yet, it will be created.
+            //If the folder exists already, the line will be ignored.
+            System.IO.Directory.CreateDirectory(@"C:\temp\");
+
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)cvs.ActualWidth, (int)cvs.ActualHeight,
+                                                                        96d, 96d, PixelFormats.Pbgra32);
+            // needed otherwise the image output is black
+            cvs.Measure(new Size((int)cvs.ActualWidth, (int)cvs.ActualHeight));
+            cvs.Arrange(new Rect(new Size((int)cvs.ActualWidth, (int)cvs.ActualHeight)));
+
+            renderBitmap.Render(cvs);
+
+            //JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+
+            using (System.IO.FileStream file = System.IO.File.Create(filename))
+            {
+                encoder.Save(file);
+                MessageBox.Show($"An image was saved to path: { filename}");
+            }
+        }
     }
 }

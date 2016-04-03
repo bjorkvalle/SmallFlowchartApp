@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
+﻿using System.Windows.Controls;
 using System.Windows.Shapes;
 
 namespace MainProject
@@ -23,10 +16,10 @@ namespace MainProject
             Height = _size;
 
             //arrow pointing down as default
-            _poly = new Polygon() { Fill = Brushes.Blue };
-            _poly.Points.Add(new Point(0, 0));
-            _poly.Points.Add(new Point((_size / 2), _size));
-            _poly.Points.Add(new Point(_size, 0));
+            _poly = new Polygon() { Fill = System.Windows.Media.Brushes.LightGray };
+            _poly.Points.Add(new System.Windows.Point(0, 0));
+            _poly.Points.Add(new System.Windows.Point((_size / 2), _size));
+            _poly.Points.Add(new System.Windows.Point(_size, 0));
 
             Children.Add(_poly);
         }

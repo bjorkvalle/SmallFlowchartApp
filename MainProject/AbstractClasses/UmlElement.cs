@@ -38,14 +38,22 @@ namespace MainProject
 
         private void InitializeBrushes()
         {
-            shapeBrush = Brushes.Beige;
-            idleStroke = Brushes.Pink;
+            shapeBrush = Brushes.LightGray;
+            idleStroke = Brushes.DarkGray;
             selectStroke = Brushes.Black;
         }
 
         protected virtual void SetDepth(int currentZIndex)
         {
             Canvas.SetZIndex(this, currentZIndex);
+        }
+
+        //STATES
+
+        public virtual void SetState(UmlElementState state, int currentZIndex)
+        {
+            this.state = state;
+            SetDepth(currentZIndex);
         }
 
         //EVENTS
@@ -64,15 +72,7 @@ namespace MainProject
                 state = UmlElementState.NotSelected;
         }
 
-        //STATES
-
-        public virtual void SetState(UmlElementState state, int currentZIndex)
-        {
-            this.state = state;
-            SetDepth(currentZIndex);
-        }
-
-        //EFFECTS
+        //ACTIONS
 
         protected virtual void HoverEffect(bool entered)
         {
@@ -89,5 +89,7 @@ namespace MainProject
         {
             shape.Stroke = newColor;
         }
+
+        public virtual void OnRemove() { }
     }
 }

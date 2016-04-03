@@ -12,8 +12,6 @@ namespace MainProject
         private List<UmlConnector> _attachedConnectors;
         public TextBox _tBox;
         private bool _addedNewConnector;
-        //private float _holdTime;
-        //private float _timeBeforeMove;
         
         public UmlShape(Canvas cvs, ShapeType type) : base(cvs, type)
         {
@@ -21,8 +19,6 @@ namespace MainProject
 
             _attachedConnectors = new List<UmlConnector>();
             _addedNewConnector = false;
-            //_holdTime = 0;
-            //_timeBeforeMove = 1.5f;
 
             //set up container
             SetSize(100, 100);
@@ -58,10 +54,9 @@ namespace MainProject
                     LayoutTransform = new RotateTransform(45)
                 };
             else
-            {
-                MessageBox.Show("An error occured when creating a new shape");
                 return null;
-            }
+
+            sp.ToolTip = "Press delete when selected to remove shape";
             return sp;
         }
 
@@ -77,10 +72,24 @@ namespace MainProject
             {
                 Text = "TestText",
                 MinWidth = this.Width * 0.2f,
-                MaxWidth = this.Width*0.95f,
+                MaxLines = 4,
+                MaxLength = 25,
+                ToolTip = "Press delete when selected to remove shape",
+                MaxWidth = this.Width * 0.85f,
+                TextWrapping = TextWrapping.Wrap,
+                Background = null,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center
             };
+        }
+
+        //STATES
+
+        public override void SetState(UmlElementState state, int currentZIndex)
+        {
+            base.SetState(state, currentZIndex);
+
+            SetStroke(state == UmlElementState.Selected ? selectStroke : idleStroke);
         }
 
         //EVENTS
@@ -100,15 +109,8 @@ namespace MainProject
         {
             if(e.MouseDevice.LeftButton == MouseButtonState.Pressed)
             {
-                ////if time
-                //SetMovePermission();
-
                 if (state == UmlElementState.Selected)
                 {
-                    ////if time
-                    //if (_holdTime < _timeBeforeMove)
-                    //    return;
-
                     MoveElement(e.GetPosition(umlCanvas));
                     MoveConnectors();
                 }
@@ -168,16 +170,6 @@ namespace MainProject
                 _attachedConnectors.Add(connector);
         }
 
-        ////if time, have a look at a timer
-        private void SetMovePermission()
-        {
-            ////if time, have a look at a timer
-            //while (_holdTime < _timeBeforeMove)
-            //{
-            //    yield return new WaitForSeconds(1);
-            //}
-        }
-
         private void MoveElement(Point mousePos)
         {
             Canvas.SetLeft(this, mousePos.X - (this.Width / 2));
@@ -192,16 +184,22 @@ namespace MainProject
             }
         }
 
-        public override void SetState(UmlElementState state, int currentZIndex)
-        {
-            base.SetState(state, currentZIndex);
-
-            SetStroke(state == UmlElementState.Selected ? selectStroke : idleStroke);
-        }
-
         public override void SetColor(Brush newColor)
         {
             shape.Fill = newColor;
+        }
+
+        public override void OnRemove()
+        {
+            foreach (var item in _attachedConnectors)
+            {
+                UmlConnector i = item as UmlConnector;
+
+                if (i != null)
+                    i.OnRemove();
+            }
+
+            this.Children.Clear();
         }
     }
 }

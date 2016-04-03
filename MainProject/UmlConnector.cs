@@ -12,7 +12,7 @@ namespace MainProject
         private UmlShape
             _originConnection,
             _targetConnection;
-        private Point 
+        private Point
             _originPos,
             _targetPos;
 
@@ -35,7 +35,7 @@ namespace MainProject
         {
             Polyline p = shape as Polyline;
 
-            if(p != null)
+            if (p != null)
             {
                 p.Points.Add(new Point(0, 0));
                 p.Points.Add(new Point(0, 0));
@@ -48,7 +48,7 @@ namespace MainProject
 
         public override void SetState(UmlElementState state, int currentZIndex)
         {
-            this.state = state == UmlElementState.NotSelected ? 
+            this.state = state == UmlElementState.NotSelected ?
                                     UmlElementState.NotSelected : UmlElementState.Selected;
 
             SetStroke(state == UmlElementState.Selected ? selectStroke : shapeBrush);
@@ -66,7 +66,7 @@ namespace MainProject
                 SetPoints(line, _targetConnection, false);
             }
         }
-        
+
         public void SetPosition(UmlShape originObj, UmlShape targetObj)
         {
             if (_originConnection == null)
@@ -77,16 +77,16 @@ namespace MainProject
 
             SetPosition();
         }
-        
+
         private Point SetAnchors(bool firstPoint)
         {
-            _originPos = new Point(Canvas.GetLeft(_originConnection) + (_originConnection.Width/2), 
+            _originPos = new Point(Canvas.GetLeft(_originConnection) + (_originConnection.Width / 2),
                                         Canvas.GetTop(_originConnection) + (_originConnection.Height / 2));
-            _targetPos = new Point(Canvas.GetLeft(_targetConnection) + (_targetConnection.Width / 2), 
+            _targetPos = new Point(Canvas.GetLeft(_targetConnection) + (_targetConnection.Width / 2),
                                         Canvas.GetTop(_targetConnection) + (_targetConnection.Height / 2));
             Point anchorPos = new Point();
-            
-            anchorPos = firstPoint ? SetFirstAnchor(_originPos, _targetPos) : 
+
+            anchorPos = firstPoint ? SetFirstAnchor(_originPos, _targetPos) :
                                         SetSecondAnchor(_originPos, _targetPos);
 
             return anchorPos;
@@ -163,13 +163,13 @@ namespace MainProject
             if (connectPos.X == _targetPos.X)
             {
                 if (connectPos.Y > _targetPos.Y)
-                    rot = 180;//good
+                    rot = 180;
                 else
                     rot = 0;
             }
             else
             {
-                if(connectPos.Y == _targetPos.Y)
+                if (connectPos.Y == _targetPos.Y)
                 {
                     if (connectPos.X > _targetPos.X)
                         rot = 90;
@@ -215,6 +215,12 @@ namespace MainProject
         public override void SetColor(Brush newColor)
         {
             shape.Stroke = newColor;
+        }
+
+        public override void OnRemove()
+        {
+            umlCanvas.Children.Remove(_targetArrow);
+            this.Children.Clear();
         }
     }
 }
