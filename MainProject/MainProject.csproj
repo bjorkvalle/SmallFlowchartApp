@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConnectorArrows.cs" />
     <Compile Include="UmlConnector.cs" />
     <Compile Include="Enums\UmlElementState.cs" />
     <Compile Include="Enums\ShapeType.cs" />

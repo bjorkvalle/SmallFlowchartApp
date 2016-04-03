@@ -10,9 +10,8 @@ namespace MainProject
     class UmlShape : UmlElement
     {
         private List<UmlConnector> _attachedConnectors;
-
         public TextBox _tBox;
-        bool _addedNewConnector;
+        private bool _addedNewConnector;
         //private float _holdTime;
         //private float _timeBeforeMove;
         

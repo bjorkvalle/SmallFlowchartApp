@@ -25,6 +25,16 @@ namespace MainProject
             InitializeComponent();
             InitializeValues();
             InitializeEventHandlers();
+
+
+            //Polygon poly = new Polygon() { Fill = Brushes.Blue , Stroke=Brushes.Red};
+
+            //poly.Points.Add(new Point(100, 100));
+            //poly.Points.Add(new Point(200, 200));
+            //poly.Points.Add(new Point(100, 200));
+            //poly.Points.Add(new Point(50, 200));
+
+            //cvsUml.Children.Add(poly);
         }
 
         private void InitializeValues()
