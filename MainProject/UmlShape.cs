@@ -10,15 +10,14 @@ namespace MainProject
     class UmlShape : UmlElement
     {
         private List<UmlConnector> _attachedConnectors;
-        public TextBox _tBox;
+        private TextBox _tBox;
         private bool _addedNewConnector;
         
         public UmlShape(Canvas cvs, ShapeType type) : base(cvs, type)
         {
-            AllowDrop = true;
-
             _attachedConnectors = new List<UmlConnector>();
             _addedNewConnector = false;
+            AllowDrop = true;
 
             //set up container
             SetSize(100, 100);
@@ -88,7 +87,6 @@ namespace MainProject
         public override void SetState(UmlElementState state, int currentZIndex)
         {
             base.SetState(state, currentZIndex);
-
             SetStroke(state == UmlElementState.Selected ? selectStroke : idleStroke);
         }
 
@@ -98,11 +96,6 @@ namespace MainProject
         {
             if (state == UmlElementState.LineDrag)
                 state = UmlElementState.NotSelected;
-        }
-
-        protected override void LeaveElement(object sender, MouseEventArgs e)
-        {
-            base.LeaveElement(sender, e); //hover effect
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)

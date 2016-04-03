@@ -1,8 +1,10 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace MainProject
 {
@@ -11,6 +13,11 @@ namespace MainProject
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Line _fakeLine;
+        //
+        //HideFakeLine();
+
+
         private ShapeType _activeType;
         private UmlElement _activeElement;
         private Brush _activeBrush;
@@ -31,7 +38,9 @@ namespace MainProject
             _activeType = ShapeType.None;
             _activeElement = null;
             _currentZIndex = 0;
-
+            _fakeLine = new Line() { Stroke = Brushes.Black, StrokeThickness = 4 };//
+            HideFakeLine();//
+            cvsUml.AllowDrop = true;//
             cvsUml.ToolTip = "Click on canvas or the delete key to deselect active shape type";
 
             //set default color
@@ -41,6 +50,13 @@ namespace MainProject
         private void InitializeEventHandlers()
         {
             cvsUml.MouseLeftButtonDown += UmlCanvas_MouseDown;
+            cvsUml.DragOver += UmlCanvas_LineDrag;
+            cvsUml.Drop += UmlElement_MouseUp;
+        }
+
+        private void UmlCanvas_LineDrag(object sender, DragEventArgs e)
+        {
+            SetFakeLineTarget(e.GetPosition(cvsUml));
         }
 
         //this only registers CLICKS (not hold)
@@ -50,7 +66,7 @@ namespace MainProject
 
             if (elm != null)
             {
-                ClickElement(elm);
+                ClickElement(elm, e.GetPosition(cvsUml));
                 e.Handled = true; //to prevent the event from firing again if hovering over new element
             }
             else if((sender as Canvas) != null)
@@ -64,13 +80,13 @@ namespace MainProject
                 DeselectUmlElement();
             }
             else 
-                CreateUmlElement(point); //create new shape - not lines
+                CreateUmlElement(point); //not lines
 
             DeselectShapeType();
             SelectButton(ref _activeShapeButton, null);
         }
 
-        private void ClickElement(UmlElement elm)
+        private void ClickElement(UmlElement elm, Point mousePos)
         {
             DeselectUmlElement();
 
@@ -86,6 +102,8 @@ namespace MainProject
                 {
                     //line drag possible
                     elm.SetState(UmlElementState.LineDrag, ++_currentZIndex);
+                    SetFakeLineOrigin(elm as UmlShape);
+                    SetFakeLineTarget(mousePos);
                 }
                 else if (elm.GetType() == typeof(UmlConnector))
                 {
@@ -135,6 +153,7 @@ namespace MainProject
         private void UmlElement_MouseUp(object sender, DragEventArgs e)
         {
             UmlShape elm = sender as UmlShape;
+            HideFakeLine();
 
             if(elm != null)
             {
@@ -143,6 +162,26 @@ namespace MainProject
                 if (con != null)
                     con.MouseLeftButtonDown += UmlCanvas_MouseDown;
             }
+        }
+
+        private void SetFakeLineOrigin(UmlShape originShape)
+        {
+            _fakeLine.X1 = Canvas.GetLeft(originShape) + (originShape.Width / 2);
+            _fakeLine.Y1 = Canvas.GetTop(originShape) + (originShape.Height / 2);
+
+            if (!cvsUml.Children.Contains(_fakeLine))
+                cvsUml.Children.Add(_fakeLine);
+        }
+
+        private void SetFakeLineTarget(Point point)
+        {
+            _fakeLine.X2 = point.X;
+            _fakeLine.Y2 = point.Y;
+        }
+
+        private void HideFakeLine()
+        {
+            cvsUml.Children.Remove(_fakeLine);
         }
 
         //**MENU**//
