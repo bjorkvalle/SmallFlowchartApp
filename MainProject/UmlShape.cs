@@ -11,7 +11,7 @@ namespace MainProject
     {
         private List<UmlConnector> _attachedConnectors;
 
-        private TextBox _tBox;
+        public TextBox _tBox;
         bool _addedNewConnector;
         //private float _holdTime;
         //private float _timeBeforeMove;
